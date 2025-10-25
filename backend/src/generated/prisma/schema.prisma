@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                   Int                   @id @default(autoincrement())
+  email                String                @unique
+  name                 String?
+  password             String
+  role                 Role                  @default(USER)
+  isEmailVerified      Boolean               @default(false)
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  Token                Token[]
+  guarantorSubmissions GuarantorSubmission[]
+}
+
+model Token {
+  id          Int       @id @default(autoincrement())
+  token       String
+  type        TokenType
+  expires     DateTime
+  blacklisted Boolean
+  createdAt   DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum TokenType {
+  ACCESS
+  REFRESH
+  RESET_PASSWORD
+  VERIFY_EMAIL
+}
+
+model GuarantorSubmission {
+  id                        String       @id @default(uuid())
+  guarantorName             String
+  relationshipToBorrower    String
+  streetAddress             String
+  city                      String
+  state                     String
+  zip                       String
+  dateOfBirth               DateTime
+  occupation                String
+  employerOrBusiness        String
+  linkedinProfile           String?
+  companyRegistrationNumber String?
+  knownAssociations         String[]
+  comments                  String
+  submissionTimestamp       DateTime     @default(now())
+  recordStatus              String       @default("pending_verification")
+  lastUpdated               DateTime     @updatedAt
+  submittedBy               User         @relation(fields: [submittedById], references: [id])
+  submittedById             Int
+  attachments               Attachment[]
+}
+
+model Attachment {
+  id                    String              @id @default(uuid())
+  filename              String
+  fileType              String
+  fileSize              Int
+  uploadedAt            DateTime            @default(now())
+  url                   String?
+  guarantorSubmission   GuarantorSubmission @relation(fields: [guarantorSubmissionId], references: [id])
+  guarantorSubmissionId String
+}

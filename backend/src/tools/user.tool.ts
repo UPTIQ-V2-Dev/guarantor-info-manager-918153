@@ -8,7 +8,6 @@ const userSchema = z.object({
     id: z.number(),
     email: z.string(),
     name: z.string().nullable(),
-    password: z.string(),
     role: z.string(),
     isEmailVerified: z.boolean(),
     createdAt: z.string(),
@@ -28,7 +27,9 @@ const createUserTool: MCPTool = {
     outputSchema: userSchema,
     fn: async (inputs: { email: string; password: string; name: string; role: Role }) => {
         const user = await userService.createUser(inputs.email, inputs.password, inputs.name, inputs.role);
-        return user;
+        // Remove password from response
+        const { password, ...userWithoutPassword } = user;
+        return userWithoutPassword;
     }
 };
 
@@ -44,13 +45,17 @@ const getUsersTool: MCPTool = {
         page: z.number().int().optional()
     }),
     outputSchema: z.object({
-        users: z.array(userSchema)
+        results: z.array(userSchema),
+        page: z.number(),
+        limit: z.number(),
+        totalPages: z.number(),
+        totalResults: z.number()
     }),
     fn: async (inputs: { name?: string; role?: string; sortBy?: string; limit?: number; page?: number }) => {
         const filter = pick(inputs, ['name', 'role']);
         const options = pick(inputs, ['sortBy', 'limit', 'page']);
         const result = await userService.queryUsers(filter, options);
-        return { users: result };
+        return result;
     }
 };
 
@@ -79,11 +84,12 @@ const updateUserTool: MCPTool = {
         userId: z.number().int(),
         name: z.string().optional(),
         email: z.string().email().optional(),
-        password: z.string().min(8).optional()
+        password: z.string().min(8).optional(),
+        role: z.enum([Role.USER, Role.ADMIN]).optional()
     }),
     outputSchema: userSchema,
-    fn: async (inputs: { userId: number; name?: string; email?: string; password?: string }) => {
-        const updateBody = pick(inputs, ['name', 'email', 'password']);
+    fn: async (inputs: { userId: number; name?: string; email?: string; password?: string; role?: Role }) => {
+        const updateBody = pick(inputs, ['name', 'email', 'password', 'role']);
         const user = await userService.updateUserById(inputs.userId, updateBody);
         return user;
     }

@@ -13,6 +13,26 @@
 
 ## Application Structure
 
+### Phase 0: Authentication Setup
+
+**Files to implement:**
+
+#### Authentication Pages
+
+- `src/pages/LoginPage.tsx` - Login page with email/password form
+- `src/pages/RegisterPage.tsx` - User registration page (if needed)
+
+#### Authentication Components
+
+- `src/components/auth/LoginForm.tsx` - Login form component
+- `src/components/auth/AuthLayout.tsx` - Layout wrapper for auth pages
+
+#### Authentication API (Already Implemented)
+
+- `src/services/auth.ts` - Authentication service with login/logout/refresh
+- `src/lib/api.ts` - API configuration with auth interceptors
+- `src/types/user.ts` - User and authentication types
+
 ### Phase 1: Core Setup & Layout
 
 **Files to implement:**
@@ -218,13 +238,14 @@ interface SubmissionMetadata {
 
 ## Implementation Order
 
-1. **Phase 1**: Setup layout, routing, and core types
-2. **Phase 2**: Dashboard with basic navigation
-3. **Phase 3**: Guarantor form (most complex phase)
-4. **Phase 4**: Submission history and search
-5. **Phase 5**: Individual submission details
-6. **Phase 6**: Polish with common components
-7. **Phase 7**: Final styling and theme adjustments
+1. **Phase 0**: Authentication setup (login/register pages)
+2. **Phase 1**: Setup layout, routing, and core types
+3. **Phase 2**: Dashboard with basic navigation
+4. **Phase 3**: Guarantor form (most complex phase)
+5. **Phase 4**: Submission history and search
+6. **Phase 5**: Individual submission details
+7. **Phase 6**: Polish with common components
+8. **Phase 7**: Final styling and theme adjustments
 
 ## Key Features Per Phase
 

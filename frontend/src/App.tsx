@@ -8,6 +8,7 @@ import { NewSubmissionPage } from '@/pages/NewSubmissionPage';
 import { SubmissionHistoryPage } from '@/pages/SubmissionHistoryPage';
 import { SubmissionDetailsPage } from '@/pages/SubmissionDetailsPage';
 import { ComingSoonPage } from '@/pages/ComingSoonPage';
+import { LoginPage } from '@/pages/LoginPage';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -24,6 +25,10 @@ export const App = () => {
         <QueryClientProvider client={queryClient}>
             <BrowserRouter>
                 <Routes>
+                    <Route
+                        path='/login'
+                        element={<LoginPage />}
+                    />
                     <Route
                         path='/'
                         element={<AppLayout />}
